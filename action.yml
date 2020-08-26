@@ -1,0 +1,25 @@
+name: 'IONOS-Deploy'
+description: 'Deploy content to IONOS webspace'
+inputs:
+  api-key:
+    description: 'IONOS API Key'
+    required: true
+  project:
+    description: 'IONOS project name'
+    required: true
+  dist-folder:
+    description: 'Directory to deploy'
+    required: true
+    default: 'dist'
+  remote-host:
+    description: 'Remotehost to deploy'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.dist-folder }}
+    - ${{ inputs.remote-host }}
+  env:
+    API_KEY: ${{ inputs.api-key }}
+    PROJECT: ${{ inputs.project }}
