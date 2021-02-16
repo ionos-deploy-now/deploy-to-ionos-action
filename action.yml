@@ -1,6 +1,9 @@
 name: 'IONOS-Deploy'
 description: 'Deploy content to IONOS webspace'
 inputs:
+  service-host:
+    description: 'The service endpoint to call in the action'
+    required: true
   api-key:
     description: 'IONOS API Key'
     required: true
@@ -23,3 +26,4 @@ runs:
   env:
     API_KEY: ${{ inputs.api-key }}
     PROJECT: ${{ inputs.project }}
+    SERVICE_HOST: ${{ inputs.service-host }}
