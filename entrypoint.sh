@@ -9,7 +9,14 @@ fi
 
 password=$(pwgen -s 30 1)
 
-username=$(http POST https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/users password=$password Authorization:"API-Key $API_KEY" Content-Type:application/json --ignore-stdin | jq -r .username)
+username=$(http POST https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/users password=$password Authorization:"API-Key $API_KEY" --ignore-stdin | jq -r .username)
+
+if [ -z "$username" ] ; then
+  echo "Failed to create temporary user"
+  exit 1
+fi
+
+echo "Created temporary user: $username"
 
 export SSHPASS=$password
 
