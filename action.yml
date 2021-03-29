@@ -17,13 +17,20 @@ inputs:
   remote-host:
     description: 'Remotehost to deploy'
     required: true
+  branch-id:
+    description: 'The IONOS.space branch id'
+    required: true
+  storage-quota:
+    description: 'The allowed quota for the storage'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.dist-folder }}
-    - ${{ inputs.remote-host }}
   env:
     API_KEY: ${{ inputs.api-key }}
     PROJECT: ${{ inputs.project }}
     SERVICE_HOST: ${{ inputs.service-host }}
+    DIST_FOLDER: ${{ inputs.dist-folder }}
+    REMOTE_HOST: ${{ inputs.remote-host }}
+    BRANCH_ID: ${{ inputs.branch-id }}
+    STORAGE_QUOTA: ${{ inputs.storage-quota }}

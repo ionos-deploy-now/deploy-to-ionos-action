@@ -1,23 +1,24 @@
 #!/bin/sh
 
-dist_folder=$1
-remote_host=$2
+deployment_size=$(du -s -B1 $DIST_FOLDER | cut -f 1)
+
+if [[ $deployment_size -gt $STORAGE_QUOTA ]] ; then
+  echo "The deployment is larger ($deployment_size) than the allowed quota ($storage_quota)"
+  exit 1
+fi
 
 password=$(pwgen -s 30 1)
 
-branch=${GITHUB_REF/refs\/heads\//}
-branch=${branch/\//%2F}
-
-username=$(http POST https://${SERVICE_HOST}/v1/projects/$PROJECT/branches/$branch/users password=$password Authorization:"API-Key $API_KEY" Content-Type:application/json --ignore-stdin | jq -r .username)
+username=$(http POST https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/users password=$password Authorization:"API-Key $API_KEY" Content-Type:application/json --ignore-stdin | jq -r .username)
 
 export SSHPASS=$password
 
-rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" $dist_folder/ $username@$remote_host:
+rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" $DIST_FOLDER/ $username@$REMOTE_HOST:
 
 if [[ $? -gt 0 ]] ; then
   echo "rsync Failure"
   exit 1
 fi
 
-http PUT https://${SERVICE_HOST}/v1/projects/$PROJECT/branches/$branch/hooks/DEPLOYED Authorization:"API-Key $API_KEY"
+http PUT https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/hooks/DEPLOYED Authorization:"API-Key $API_KEY"
 
