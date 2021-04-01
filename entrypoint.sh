@@ -9,12 +9,22 @@ fi
 
 password=$(pwgen -s 30 1)
 
-username=$(http POST https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/users password=$password Authorization:"API-Key $API_KEY" --ignore-stdin | jq -r .username)
+create_temporary_user() {
+  counter=$1
+  if [[ $counter -eq 0 ]] ; then
+    echo "Failed to create temporary user" 1>&2
+    exit 1
+  fi
+  username=$(http POST https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/users password=$password Authorization:"API-Key $API_KEY" --ignore-stdin --check-status | jq -r .username)
 
-if [ -z "$username" ] ; then
-  echo "Failed to create temporary user"
-  exit 1
-fi
+  if [[ $? -eq 5 ]] ; then
+    echo "Retry creating temporary user in 1 second" 1>&2
+    sleep 1
+    create_temporary_user $(($counter) - 1))
+  fi
+  echo $username
+}
+username=$(create_temporary_user 3)
 
 echo "Created temporary user: $username"
 
