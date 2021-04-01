@@ -3,7 +3,7 @@
 deployment_size=$(du -s -B1 $DIST_FOLDER | cut -f 1)
 
 if [[ $deployment_size -gt $STORAGE_QUOTA ]] ; then
-  echo "The deployment is larger ($deployment_size) than the allowed quota ($storage_quota)"
+  echo "The deployment is larger ($deployment_size) than the allowed quota ($STORAGE_QUOTA)"
   exit 1
 fi
 
@@ -20,7 +20,7 @@ create_temporary_user() {
   if [[ $? -eq 5 ]] ; then
     echo "Retry creating temporary user in 1 second" 1>&2
     sleep 1
-    create_temporary_user $(($counter) - 1))
+    create_temporary_user $(($counter - 1))
   fi
   echo $username
 }
