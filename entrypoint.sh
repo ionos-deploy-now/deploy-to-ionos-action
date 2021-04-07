@@ -1,6 +1,6 @@
 #!/bin/sh
 
-deployment_size=$(du -s -B1 --exclude=.git $DIST_FOLDER | cut -f 1)
+deployment_size=$(du -s -B1 --exclude=.git --exclude=.github $DIST_FOLDER | cut -f 1)
 
 if [[ $deployment_size -gt $STORAGE_QUOTA ]] ; then
   echo "The deployment is larger ($deployment_size) than the allowed quota ($STORAGE_QUOTA)"
@@ -30,7 +30,7 @@ echo "Created temporary user: $username"
 
 export SSHPASS=$password
 
-rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" --exclude=.git $DIST_FOLDER/ $username@$REMOTE_HOST:
+rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" --exclude=.git --exclude=.github $DIST_FOLDER/ $username@$REMOTE_HOST:
 
 if [[ $? -gt 0 ]] ; then
   echo "rsync Failure"
