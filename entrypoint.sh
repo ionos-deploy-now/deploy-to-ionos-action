@@ -1,4 +1,5 @@
 #!/bin/sh
+set -o pipefail
 
 deployment_size=$(du -s -B1 --exclude=.git --exclude=.github $DIST_FOLDER | cut -f 1)
 
