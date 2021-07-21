@@ -23,6 +23,10 @@ inputs:
   storage-quota:
     description: 'The allowed quota for the storage'
     required: true
+  initial-build:
+    description: 'is this the initial build of the branch'
+    required: false
+    default: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -34,3 +38,4 @@ runs:
     REMOTE_HOST: ${{ inputs.remote-host }}
     BRANCH_ID: ${{ inputs.branch-id }}
     STORAGE_QUOTA: ${{ inputs.storage-quota }}
+    INITIAL_BUILD: ${{ inputs.initial-build }}

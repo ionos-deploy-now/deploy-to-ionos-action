@@ -25,18 +25,48 @@ create_temporary_user() {
   fi
   echo $username
 }
-username=$(create_temporary_user 3)
+export USERNAME=$(create_temporary_user 3)
 
-echo "Created temporary user: $username"
+echo "Created temporary user: $USERNAME"
 
 export SSHPASS=$password
 
-rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" --exclude=.git --exclude=.github $DIST_FOLDER/ $username@$REMOTE_HOST:
+EXCLUDE_FROM=""
+if [[ $INITIAL_BUILD  == "true" ]] ; then
+  if [[ -f 'initialdeploy.excludes' ]];then
+    EXCLUDE_FROM="--exclude-from=initialdeploy.excludes"
+  fi
+else
+  if [[ -f 'deploy.excludes' ]];then
+    EXCLUDE_FROM="--exclude-from=deploy.excludes"
+  fi
+fi
+
+echo "rsync -av --delete --exclude=logs --rsh=\"/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no\" --exclude=.git --exclude=.github $EXCLUDE_FROM $DIST_FOLDER/ $USERNAME@$REMOTE_HOST:"
+rsync -av --delete --exclude=logs --rsh="/usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no" --exclude=.git --exclude=.github $EXCLUDE_FROM $DIST_FOLDER/ $USERNAME@$REMOTE_HOST:
 
 if [[ $? -gt 0 ]] ; then
   echo "rsync Failure"
   exit 1
 fi
 
-http PUT https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/hooks/DEPLOYED Authorization:"API-Key $API_KEY"
+FILENAME="remote.commands"
 
+if [[ -f $FILENAME ]];then
+  IFS=$'\n'
+  LINES=$(cat $FILENAME)
+
+  set -o noglob
+  for LINE in $LINES
+  do
+    echo "Running the remote command in the webpsace: $LINE"
+    /usr/bin/sshpass -e ssh -o StrictHostKeyChecking=no $USERNAME@$REMOTE_HOST "$LINE"
+    if [[ $? -gt 0 ]] ; then
+      echo "Error running the remote command in the webspace"
+      exit 1
+    fi
+  done
+  set +o noglob
+fi
+
+http PUT https://$SERVICE_HOST/v1/projects/$PROJECT/branches/$BRANCH_ID/hooks/DEPLOYED Authorization:"API-Key $API_KEY"
