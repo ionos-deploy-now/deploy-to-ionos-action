@@ -2,40 +2,39 @@ name: 'IONOS-Deploy'
 description: 'Deploy content to IONOS webspace'
 inputs:
   service-host:
-    description: 'The service endpoint to call in the action'
+    description: 'The host of the IONOS Deploy Now API to retrieve necessary data about the current project'
     required: true
   api-key:
-    description: 'IONOS API Key'
+    description: 'API Key used for authentication and authorization of the IONOS Deploy Now API'
     required: true
   project:
-    description: 'IONOS project name'
-    required: true
-  dist-folder:
-    description: 'Directory to deploy'
-    required: true
-    default: 'dist'
-  remote-host:
-    description: 'Remotehost to deploy'
+    description: 'IONOS Deploy Now projectId, used to identify current project for which data is retrieved'
     required: true
   branch-id:
-    description: 'The IONOS.space branch id'
+    description: 'IONOS Deploy Now branchId, used to identify current branch of the project for which data is retrieved'
+    required: true
+  dist-folder:
+    description: 'Root directory which is deployed to the IONOS infrastructure'
+    required: true
+  bootstrap-deploy:
+    description: 'Executes the bootstrap deployment block if this is the first build of a branch'
+    required: true
+    default: 'true'
+  remote-host:
+    description: 'Target in the IONOS infrastructure for deployment'
     required: true
   storage-quota:
-    description: 'The allowed quota for the storage'
+    description: 'The max allowed storage quota on the IONOS infrastructure for this project/branch'
     required: true
-  initial-build:
-    description: 'is this the initial build of the branch'
-    required: false
-    default: true
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:main'
   env:
-    API_KEY: ${{ inputs.api-key }}
-    PROJECT: ${{ inputs.project }}
     SERVICE_HOST: ${{ inputs.service-host }}
-    DIST_FOLDER: ${{ inputs.dist-folder }}
-    REMOTE_HOST: ${{ inputs.remote-host }}
+    API_KEY: ${{ inputs.api-key }}
+    PROJECT_ID: ${{ inputs.project }}
     BRANCH_ID: ${{ inputs.branch-id }}
+    DIST_FOLDER: ${{ inputs.dist-folder }}
+    BOOTSTRAP_DEPLOY: ${{ inputs.bootstrap-deploy }}
+    REMOTE_HOST: ${{ inputs.remote-host }}
     STORAGE_QUOTA: ${{ inputs.storage-quota }}
-    INITIAL_BUILD: ${{ inputs.initial-build }}
