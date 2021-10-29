@@ -28,7 +28,7 @@ inputs:
     required: true
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.0.2'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.0.3'
   env:
     SERVICE_HOST: ${{ inputs.service-host }}
     API_KEY: ${{ inputs.api-key }}
