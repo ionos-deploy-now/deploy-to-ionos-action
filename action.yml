@@ -16,25 +16,16 @@ inputs:
   dist-folder:
     description: 'Root directory which is deployed to the IONOS infrastructure'
     required: true
-  bootstrap-deploy:
-    description: 'Executes the bootstrap deployment block if this is the first build of a branch'
-    required: true
-    default: 'true'
-  remote-host:
-    description: 'Target in the IONOS infrastructure for deployment'
-    required: true
-  storage-quota:
-    description: 'The max allowed storage quota on the IONOS infrastructure for this project/branch'
-    required: true
+  runtime-placeholder-files:
+    description: 'Files that contain runtime placeholders'
+    required: false
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.0.3'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.0.4'
   env:
     SERVICE_HOST: ${{ inputs.service-host }}
     API_KEY: ${{ inputs.api-key }}
     PROJECT_ID: ${{ inputs.project }}
     BRANCH_ID: ${{ inputs.branch-id }}
     DIST_FOLDER: ${{ inputs.dist-folder }}
-    BOOTSTRAP_DEPLOY: ${{ inputs.bootstrap-deploy }}
-    REMOTE_HOST: ${{ inputs.remote-host }}
-    STORAGE_QUOTA: ${{ inputs.storage-quota }}
+    RUNTIME_PLACEHOLDER_FILES: ${{ inputs.runtime-placeholder-files }}
