@@ -19,6 +19,15 @@ inputs:
   runtime-placeholder-files:
     description: 'Files that contain runtime placeholders'
     required: false
+  bootstrap-deploy:
+    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
+    required: false
+  remote-host:
+    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
+    required: false
+  storage-quota:
+    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
+    required: false
 runs:
   using: 'docker'
   image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.0.4'
