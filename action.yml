@@ -28,9 +28,11 @@ inputs:
   storage-quota:
     description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
     required: false
+  workspace:
+    default: "'${{ github.workspace }}/'"
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.1.2'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.1.3'
   env:
     SERVICE_HOST: ${{ inputs.service-host }}
     API_KEY: ${{ inputs.api-key }}
