@@ -2,41 +2,46 @@ name: 'IONOS-Deploy'
 description: 'Deploy content to IONOS webspace'
 inputs:
   service-host:
-    description: 'The host of the IONOS Deploy Now API to retrieve necessary data about the current project'
+    description: 'The service endpoint to call in the action'
     required: true
   api-key:
-    description: 'API Key used for authentication and authorization of the IONOS Deploy Now API'
+    description: 'The api key to access IONOS Deploy Now'
     required: true
-  project:
-    description: 'IONOS Deploy Now projectId, used to identify current project for which data is retrieved'
+  project-id:
+    description: 'The identifier of the IONOS Deploy Now project'
     required: true
   branch-id:
-    description: 'IONOS Deploy Now branchId, used to identify current branch of the project for which data is retrieved'
+    description: 'The identifier of a branch'
     required: true
-  dist-folder:
-    description: 'Root directory which is deployed to the IONOS infrastructure'
+  deployment-id:
+    description: 'The identifier of a deployment'
     required: true
-  runtime-placeholder-files:
-    description: 'Files that contain runtime placeholders'
-    required: false
-  bootstrap-deploy:
-    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
-    required: false
-  remote-host:
-    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
-    required: false
-  storage-quota:
-    description: 'Deprecated. This value is no longer used by the action. We just keep it to prevent github form showing warnings for existing projects which still pass those values'
-    required: false
+  deployment-folder:
+    description: 'The folder to deploy'
+    required: true
+    default: deployment
+  deployment-info:
+    description: 'A json object containing information about the deployment'
+    required: true
+  ssh-user:
+    description: 'The SSH user for the deployment'
+    required: true
+  ssh-key:
+    description: 'The SSH key for the deployment'
+    required: true
+
   workspace:
     default: "'${{ github.workspace }}/'"
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v1.1.4'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v2.0.0'
   env:
     SERVICE_HOST: ${{ inputs.service-host }}
     API_KEY: ${{ inputs.api-key }}
-    PROJECT_ID: ${{ inputs.project }}
+    PROJECT_ID: ${{ inputs.project-id }}
     BRANCH_ID: ${{ inputs.branch-id }}
-    DIST_FOLDER: ${{ inputs.dist-folder }}
-    RUNTIME_PLACEHOLDER_FILES: ${{ inputs.runtime-placeholder-files }}
+    DEPLOYMENT_ID: ${{ inputs.deployment-id }}
+    DEPLOYMENT_FOLDER: ${{ inputs.deployment-folder }}
+    DEPLOYMENT_INFO: ${{ inputs.deployment-info }}
+    SSH_USER: ${{ inputs.ssh-user }}
+    SSH_KEY: ${{ inputs.ssh-key }}
