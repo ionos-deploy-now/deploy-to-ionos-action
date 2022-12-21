@@ -34,7 +34,7 @@ inputs:
     default: "'${{ github.workspace }}/'"
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v2.0.0'
+  image: 'docker://ghcr.io/ionos-deploy-now/deploy-to-ionos:v2.0.1'
   env:
     SERVICE_HOST: ${{ inputs.service-host }}
     API_KEY: ${{ inputs.api-key }}
